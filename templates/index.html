@@ -2,87 +2,178 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Phishing Detection Tool</title>
+    <title>Phishing Detector</title>
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
+            margin: 0;
+            height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #1f2933, #111827);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            color: #e5e7eb;
         }
 
-        .card {
-            background: white;
+        .container {
+            width: 520px;
+            background: #1f2937;
+            border-radius: 12px;
             padding: 30px;
-            width: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        }
+
+        .header {
             text-align: center;
+            margin-bottom: 25px;
         }
 
-        h2 {
-            margin-bottom: 20px;
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 600;
         }
 
-        input[type="text"] {
+        .header p {
+            margin-top: 6px;
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .url-box {
+            margin-top: 20px;
+        }
+
+        .url-box input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background: #111827;
+            color: #e5e7eb;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .url-box input::placeholder {
+            color: #6b7280;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
         }
 
         button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        button:hover {
-            background-color: #2684e9;
+        .check-btn {
+            background: #14b8a6;
+            color: #022c22;
+        }
+
+        .clear-btn {
+            background: #374151;
+            color: #d1d5db;
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 18px;
+            border-radius: 10px;
+            background: #111827;
+            border: 1px solid #374151;
+        }
+
+        .result-box h3 {
+            margin: 0;
+            font-size: 15px;
+            color: #9ca3af;
         }
 
         .result {
-            margin-top: 20px;
+            margin-top: 8px;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         .legitimate {
-            color: green;
+            color: #22c55e;
         }
 
         .phishing {
-            color: red;
+            color: #ef4444;
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h4 {
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: #9ca3af;
+        }
+
+        .history-item {
+            padding: 10px;
+            border-radius: 6px;
+            background: #111827;
+            border: 1px solid #374151;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #d1d5db;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #6b7280;
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>Phishing Detection Tool</h2>
-
-        <form method="post">
-            <input type="text" name="url" placeholder="Enter website URL" required>
-            <button type="submit">Check Website</button>
-        </form>
-
-        {% if prediction %}
-            <div class="result 
-                {% if prediction == 'Legitimate Website' %}legitimate{% else %}phishing{% endif %}">
-                Result: {{ prediction }}
-            </div>
-        {% endif %}
+<div class="container">
+    <div class="header">
+        <h1>Phishing Detector</h1>
+        <p>Enter a URL to check if it’s safe</p>
     </div>
 
+    <form method="post">
+        <div class="url-box">
+            <input type="text" name="url" placeholder="e.g. https://example.com/login" required>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="check-btn">Check URL</button>
+            <button type="reset" class="clear-btn">Clear</button>
+        </div>
+    </form>
+
+    {% if prediction %}
+    <div class="result-box">
+        <h3>Status</h3>
+        <div class="result {% if prediction == 'Legitimate Website' %}legitimate{% else %}phishing{% endif %}">
+            {{ prediction }}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="history">
+        <h4>Recent Searches</h4>
+        <div class="history-item">https://google.com — Legitimate</div>
+        <div class="history-item">http://user@bank-login.com — Phishing</div>
+    
 </body>
 </html>
