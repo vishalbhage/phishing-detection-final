@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Phishing Detection Tool</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2684e9;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .legitimate {
+            color: green;
+        }
+
+        .phishing {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Phishing Detection Tool</h2>
+
+        <form method="post">
+            <input type="text" name="url" placeholder="Enter website URL" required>
+            <button type="submit">Check Website</button>
+        </form>
+
+        {% if prediction %}
+            <div class="result 
+                {% if prediction == 'Legitimate Website' %}legitimate{% else %}phishing{% endif %}">
+                Result: {{ prediction }}
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
