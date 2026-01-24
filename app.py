@@ -8,6 +8,9 @@ app = Flask(__name__)
 # Load trained model
 model = pickle.load(open("model.pkl", "rb"))
 
+# Store history
+history = []
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = None
@@ -19,11 +22,15 @@ def index():
         # Extract DOMAIN only
         domain = urlparse(url).netloc
 
-        # ✅ IMPROVED RULE-BASED CHECK (DOMAIN-BASED)
+        # If user enters without https://
+        if domain == "":
+            domain = urlparse("http://" + url).netloc
+
+        # RULE-BASED CHECK
         if (
             "@" in url or
             domain.count("-") >= 3 or
-            domain.replace(".", "").isdigit() or   # IP-like domain
+            domain.replace(".", "").isdigit() or
             "bit.ly" in domain or
             "tinyurl" in domain or
             ("secure" in domain and "login" in domain)
@@ -33,8 +40,14 @@ def index():
             result = model.predict([features])[0]
             prediction = "Legitimate Website" if result == 1 else "Phishing Website"
 
-    return render_template("index.html", prediction=prediction)
+        # Save to history
+        history.append((url, prediction))
+
+    return render_template(
+        "index.html",
+        prediction=prediction,
+        history=history[::-1]  # latest first
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
-
