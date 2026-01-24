@@ -4,144 +4,142 @@
     <meta charset="UTF-8">
     <title>Phishing Detector</title>
 
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #1f2933, #111827);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #e5e7eb;
-        }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-        .container {
-            width: 520px;
-            background: #1f2937;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-        }
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #111827;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #e5e7eb;
+    padding: 12px;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
+.container {
+    width: 100%;
+    max-width: 480px;
+    background: #1f2937;
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
 
-        .header h1 {
-            margin: 0;
-            font-size: 26px;
-            font-weight: 600;
-        }
+.header h1 {
+    margin: 0;
+    font-size: clamp(16px, 2.5vw, 20px);
+    text-align: center;
+}
 
-        .header p {
-            margin-top: 6px;
-            font-size: 14px;
-            color: #9ca3af;
-        }
+.header p {
+    font-size: 12px;
+    text-align: center;
+    color: #9ca3af;
+}
 
-        .url-box {
-            margin-top: 20px;
-        }
+.url-box input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 6px;
+    border: 1px solid #374151;
+    background: #111827;
+    color: #e5e7eb;
+    font-size: 13px;
+}
 
-        .url-box input {
-            width: 100%;
-            padding: 14px;
-            border-radius: 8px;
-            border: 1px solid #374151;
-            background: #111827;
-            color: #e5e7eb;
-            font-size: 14px;
-            outline: none;
-        }
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
 
-        .url-box input::placeholder {
-            color: #6b7280;
-        }
+button {
+    flex: 1;
+    padding: 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
 
-        .actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 15px;
-        }
+.check-btn {
+    background: #22c55e;
+    color: #022c22;
+}
 
-        button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-        }
+.clear-btn {
+    background: #374151;
+    color: #e5e7eb;
+}
 
-        .check-btn {
-            background: #14b8a6;
-            color: #022c22;
-        }
+.result-box {
+    margin-top: 14px;
+    padding: 12px;
+    background: #111827;
+    border-radius: 6px;
+    border: 1px solid #374151;
+}
 
-        .clear-btn {
-            background: #374151;
-            color: #d1d5db;
-        }
+.result {
+    font-size: 15px;
+    font-weight: 600;
+}
 
-        .result-box {
-            margin-top: 25px;
-            padding: 18px;
-            border-radius: 10px;
-            background: #111827;
-            border: 1px solid #374151;
-        }
+.legitimate { color: #22c55e; }
+.phishing { color: #ef4444; }
 
-        .result-box h3 {
-            margin: 0;
-            font-size: 15px;
-            color: #9ca3af;
-        }
+/* SCROLLABLE HISTORY */
+.history {
+    margin-top: 14px;
+    max-height: 140px;   /* shows ~4 items */
+    overflow-y: auto;
+    padding-right: 4px;
+}
 
-        .result {
-            margin-top: 8px;
-            font-size: 18px;
-            font-weight: 700;
-        }
+.history h4 {
+    margin-bottom: 6px;
+    font-size: 13px;
+}
 
-        .legitimate {
-            color: #22c55e;
-        }
+.history-item {
+    font-size: 12px;
+    padding: 6px 8px;
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
 
-        .phishing {
-            color: #ef4444;
-        }
+/* Scrollbar styling */
+.history::-webkit-scrollbar {
+    width: 6px;
+}
 
-        .history {
-            margin-top: 30px;
-        }
+.history::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 10px;
+}
 
-        .history h4 {
-            margin-bottom: 10px;
-            font-size: 15px;
-            color: #9ca3af;
-        }
+/* Extra small screens */
+@media (max-width: 360px) {
+    button {
+        font-size: 11px;
+        padding: 10px;
+    }
 
-        .history-item {
-            padding: 10px;
-            border-radius: 6px;
-            background: #111827;
-            border: 1px solid #374151;
-            margin-bottom: 8px;
-            font-size: 13px;
-            color: #d1d5db;
-        }
-
-        .footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 11px;
-            color: #6b7280;
-        }
-    </style>
+    .url-box input {
+        font-size: 11px;
+    }
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
@@ -172,8 +170,11 @@
 
     <div class="history">
         <h4>Recent Searches</h4>
-        <div class="history-item">https://google.com — Legitimate</div>
-        <div class="history-item">http://user@bank-login.com — Phishing</div>
-    
+        {% for h in history %}
+            <div class="history-item">{{ h[0] }} — {{ h[1] }}</div>
+        {% endfor %}
+    </div>
+</div>
+
 </body>
 </html>
