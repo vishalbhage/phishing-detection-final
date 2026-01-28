@@ -1,19 +1,22 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 import pickle
+import pandas as pd
 from urllib.parse import urlparse
 from feature_extraction import extract_features
 
 app = Flask(__name__)
+app.secret_key = "phishing_detector_secret_key_2026"  # required for sessions
 
 # Load trained model
 model = pickle.load(open("model.pkl", "rb"))
 
-# Store history
-history = []
-
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = None
+
+    # Create separate history for each user
+    if "history" not in session:
+        session["history"] = []
 
     if request.method == "POST":
         url = request.form["url"].lower()
@@ -21,12 +24,10 @@ def index():
 
         # Extract DOMAIN only
         domain = urlparse(url).netloc
-
-        # If user enters without https://
         if domain == "":
             domain = urlparse("http://" + url).netloc
 
-        # RULE-BASED CHECK
+        # ---------------- Rule-Based Quick Check ----------------
         if (
             "@" in url or
             domain.count("-") >= 3 or
@@ -37,16 +38,19 @@ def index():
         ):
             prediction = "Phishing Website"
         else:
-            result = model.predict([features])[0]
+            # ---------------- ML Prediction ----------------
+            feature_df = pd.DataFrame([features], columns=model.feature_names_in_)
+            result = model.predict(feature_df)[0]
             prediction = "Legitimate Website" if result == 1 else "Phishing Website"
 
-        # Save to history
-        history.append((url, prediction))
+        # Save per-user history
+        session["history"].append((url, prediction))
+        session.modified = True
 
     return render_template(
         "index.html",
         prediction=prediction,
-        history=history[::-1]  # latest first
+        history=session["history"][::-1]  # latest first
     )
 
 if __name__ == "__main__":
