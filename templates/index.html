@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <!-- ✅ REQUIRED FOR MOBILE FIT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Phishing Detector</title>
 
 <style>
@@ -16,14 +20,15 @@ body {
     background: #111827;
     display: flex;
     justify-content: center;
-    align-items: flex-start;   /* important */
+    align-items: flex-start;
     color: #e5e7eb;
     padding: 16px;
+    overflow-x: hidden;   /* ✅ prevent horizontal scroll */
 }
 
 .container {
     width: 100%;
-    max-width: 720px;   /* bigger for mobile */
+    max-width: 720px;
     background: #1f2937;
     border-radius: 14px;
     padding: 20px;
@@ -51,7 +56,7 @@ body {
     border: 1px solid #374151;
     background: #111827;
     color: #e5e7eb;
-    font-size: 15px;
+    font-size: 16px;   /* ✅ prevents mobile zoom */
 }
 
 .actions {
@@ -63,7 +68,7 @@ body {
 button {
     flex: 1;
     padding: 14px;
-    font-size: 15px;
+    font-size: 16px;   /* ✅ mobile friendly */
     border-radius: 10px;
     border: none;
     cursor: pointer;
@@ -99,7 +104,7 @@ button {
 
 .history {
     margin-top: 18px;
-    max-height: 220px;   /* more visible */
+    max-height: 220px;
     overflow-y: auto;
 }
 
@@ -116,7 +121,6 @@ button {
     border-radius: 8px;
     margin-bottom: 8px;
 }
-
 </style>
 </head>
 
