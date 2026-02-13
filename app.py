@@ -5,52 +5,62 @@ from urllib.parse import urlparse
 from feature_extraction import extract_features
 
 app = Flask(__name__)
-app.secret_key = "phishing_detector_secret_key_2026"  # required for sessions
+app.secret_key = "phishing_detector_secret_key_2026"
 
-# Load trained model
-model = pickle.load(open("model.pkl", "rb"))
+# ---------------- Load Model ----------------
+with open("model.pkl", "rb") as f:
+    saved = pickle.load(f)
+
+model = saved["model"]
+model_columns = saved["columns"]
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = None
+    confidence = None
 
-    # Create separate history for each user
     if "history" not in session:
         session["history"] = []
 
     if request.method == "POST":
-        url = request.form["url"].lower()
-        features = extract_features(url)
+        url = request.form["url"].strip().lower()
 
-        # Extract DOMAIN only
+        if not url.startswith(("http://", "https://")):
+            url = "http://" + url
+
+        features_dict = extract_features(url)
+
+        feature_df = pd.DataFrame([features_dict])
+        feature_df = feature_df[model_columns]
+
+        # ---------------- Rule-Based Quick Filter ----------------
         domain = urlparse(url).netloc
-        if domain == "":
-            domain = urlparse("http://" + url).netloc
 
-        # ---------------- Rule-Based Quick Check ----------------
-        if (
+        rule_flag = (
             "@" in url or
             domain.count("-") >= 3 or
             domain.replace(".", "").isdigit() or
-            "bit.ly" in domain or
-            "tinyurl" in domain or
-            ("secure" in domain and "login" in domain)
-        ):
+            any(short in domain for short in ["bit.ly", "tinyurl", "goo.gl"])
+        )
+
+        if rule_flag:
             prediction = "Phishing Website"
+            confidence = 100.0
         else:
-            # ---------------- ML Prediction ----------------
-            feature_df = pd.DataFrame([features], columns=model.feature_names_in_)
             result = model.predict(feature_df)[0]
+            prob = model.predict_proba(feature_df)[0]
+            confidence = round(max(prob) * 100, 2)
+
             prediction = "Legitimate Website" if result == 1 else "Phishing Website"
 
-        # Save per-user history
         session["history"].append((url, prediction))
         session.modified = True
 
     return render_template(
         "index.html",
         prediction=prediction,
-        history=session["history"][::-1]  # latest first
+        confidence=confidence,
+        history=session["history"][::-1]
     )
 
 if __name__ == "__main__":

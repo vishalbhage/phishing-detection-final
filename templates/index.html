@@ -143,14 +143,22 @@ button {
         </div>
     </form>
 
-    {% if prediction %}
-    <div class="result-box">
-        <h3>Status</h3>
-        <div class="result {% if prediction == 'Legitimate Website' %}legitimate{% else %}phishing{% endif %}">
-            {{ prediction }}
-        </div>
+    
+   {% if prediction %}
+<div class="result-box">
+    <h3>Status</h3>
+
+    <div class="result {% if prediction == 'Legitimate Website' %}legitimate{% else %}phishing{% endif %}">
+        {{ prediction }}
     </div>
+
+    {% if confidence %}
+    <p style="margin-top:8px;font-size:14px;color:#9ca3af;">
+        Confidence: <strong>{{ confidence }}%</strong>
+    </p>
     {% endif %}
+</div>
+{% endif %}
 
     <div class="history">
         <h4>Recent Searches</h4>
