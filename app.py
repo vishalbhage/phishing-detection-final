@@ -45,7 +45,7 @@ def index():
 
         if rule_flag:
             prediction = "Phishing Website"
-            confidence = 100.0
+            confidence = 99.0
         else:
             result = model.predict(feature_df)[0]
             prob = model.predict_proba(feature_df)[0]
@@ -65,3 +65,4 @@ def index():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
